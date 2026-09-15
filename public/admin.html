@@ -97,5 +97,6 @@ function setStatus(id,status){api('/api/admin/order-status',{method:'POST',body:
 function renderReviews(revs){var wrap=document.getElementById('pReviews');if(!revs.length){wrap.innerHTML='<div class="empty">No reviews yet</div>';return}wrap.innerHTML=revs.map(function(r){var stars='★'.repeat(r.rating)+'☆'.repeat(5-r.rating);return '<div class="review"><div class="review-head"><strong>'+esc(r.name)+'</strong><span class="review-stars">'+stars+'</span></div><div class="review-text">'+esc(r.text)+'</div><div class="review-date">'+fd(r.date)+'</div><button class="review-del" onclick="delReview(\''+r.id+'\')">Delete</button></div>'}).join('')}
 function delReview(id){if(!confirm('Delete this review?'))return;api('/api/admin/review',{method:'DELETE',body:JSON.stringify({id:id})}).then(function(){loadData()}).catch(function(e){alert(e.message)})}
 document.getElementById('p').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin()});
+/* yuri_auto_refresh */setInterval(function(){if(TOKEN&&document.getElementById('dashBox').style.display!=='none')loadData()},5000);
 if(TOKEN){api('/api/admin/data').then(function(d){CURRENCY=d.currency||'KES';renderStats(d.stats);ALL_ORDERS=d.orders||[];renderOrders();renderReviews(d.reviews||[]);showDash()}).catch(function(){logout()})}else{showLogin()}
 </script></body></html>
