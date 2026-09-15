@@ -1,0 +1,178 @@
+[
+  {
+    "id": "n1",
+    "name": "Nyama Choma (Goat)",
+    "cat": "Nyama Choma",
+    "price": 850,
+    "desc": "Charcoal-grilled goat ribs with ugali and kachumbari.",
+    "img": "https://images.unsplash.com/photo-1544025162-d76694265947?w=900&q=80"
+  },
+  {
+    "id": "n2",
+    "name": "Nyama Choma (Beef)",
+    "cat": "Nyama Choma",
+    "price": 750,
+    "desc": "Slow-roasted beef ribs with ugali and sukuma wiki.",
+    "img": "https://images.unsplash.com/photo-1558030006-450675393462?w=900&q=80"
+  },
+  {
+    "id": "n3",
+    "name": "Kuku Choma (Half)",
+    "cat": "Nyama Choma",
+    "price": 950,
+    "desc": "Free-range kienyeji chicken grilled over charcoal.",
+    "img": "https://images.unsplash.com/photo-1598103442097-8b74394b95c6?w=900&q=80"
+  },
+  {
+    "id": "n4",
+    "name": "Mixed Grill (for 2)",
+    "cat": "Nyama Choma",
+    "price": 2200,
+    "desc": "Goat, beef, chicken and sausage on a sizzling platter.",
+    "img": "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=900&q=80"
+  },
+  {
+    "id": "m1",
+    "name": "Ugali & Nyama Wet Fry",
+    "cat": "Mains",
+    "price": 650,
+    "desc": "Tender beef cubes in tomato-onion gravy with ugali.",
+    "img": "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=900&q=80"
+  },
+  {
+    "id": "m2",
+    "name": "Pilau ya Kuku",
+    "cat": "Mains",
+    "price": 700,
+    "desc": "Fragrant Swahili-spiced rice with tender chicken.",
+    "img": "https://images.unsplash.com/photo-1596797038530-2c107229654b?w=900&q=80"
+  },
+  {
+    "id": "m3",
+    "name": "Pilau ya Nyama",
+    "cat": "Mains",
+    "price": 680,
+    "desc": "Coastal pilau with slow-cooked beef chunks.",
+    "img": "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=900&q=80"
+  },
+  {
+    "id": "m4",
+    "name": "Fried Tilapia & Ugali",
+    "cat": "Mains",
+    "price": 900,
+    "desc": "Lake Victoria tilapia with ugali and greens.",
+    "img": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=900&q=80"
+  },
+  {
+    "id": "m5",
+    "name": "Matumbo Wet Fry",
+    "cat": "Mains",
+    "price": 550,
+    "desc": "Slow-cooked tripe in rich gravy with ugali.",
+    "img": "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=900&q=80"
+  },
+  {
+    "id": "c1",
+    "name": "Biryani ya Kuku",
+    "cat": "Swahili",
+    "price": 850,
+    "desc": "Layered spiced rice with marinated chicken.",
+    "img": "https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=900&q=80"
+  },
+  {
+    "id": "c2",
+    "name": "Mahamri & Mbaazi",
+    "cat": "Swahili",
+    "price": 350,
+    "desc": "Coconut doughnuts with creamy pigeon peas.",
+    "img": "https://images.unsplash.com/photo-1567337710282-00832b415979?w=900&q=80"
+  },
+  {
+    "id": "s1",
+    "name": "Chapati (2 pcs)",
+    "cat": "Sides",
+    "price": 120,
+    "desc": "Soft layered flatbread made fresh.",
+    "img": "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=900&q=80"
+  },
+  {
+    "id": "s2",
+    "name": "Mandazi (5 pcs)",
+    "cat": "Sides",
+    "price": 150,
+    "desc": "Sweet coconut doughnuts with cardamom.",
+    "img": "https://images.unsplash.com/photo-1626074353765-517a681e40be?w=900&q=80"
+  },
+  {
+    "id": "s3",
+    "name": "Sukuma Wiki",
+    "cat": "Sides",
+    "price": 150,
+    "desc": "Kale sauteed with onions and tomatoes.",
+    "img": "https://images.unsplash.com/photo-1626200419199-391ae4be7a41?w=900&q=80"
+  },
+  {
+    "id": "s4",
+    "name": "Kachumbari",
+    "cat": "Sides",
+    "price": 180,
+    "desc": "Fresh tomato, onion, coriander and chilli.",
+    "img": "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=900&q=80"
+  },
+  {
+    "id": "s5",
+    "name": "Chips (Fries)",
+    "cat": "Sides",
+    "price": 250,
+    "desc": "Golden hand-cut fries with kachumbari.",
+    "img": "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=900&q=80"
+  },
+  {
+    "id": "s6",
+    "name": "Smokie Pasua",
+    "cat": "Sides",
+    "price": 100,
+    "desc": "Split sausage stuffed with kachumbari.",
+    "img": "https://images.unsplash.com/photo-1612392062126-5f4c4c3b0a5e?w=900&q=80"
+  },
+  {
+    "id": "d1",
+    "name": "Passion Juice",
+    "cat": "Drinks",
+    "price": 300,
+    "desc": "Freshly pressed, no sugar added.",
+    "img": "https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=900&q=80"
+  },
+  {
+    "id": "d2",
+    "name": "Chai ya Tangawizi",
+    "cat": "Drinks",
+    "price": 200,
+    "desc": "Ginger tea with milk and cardamom.",
+    "img": "https://images.unsplash.com/photo-1571934811356-5cc061b6821f?w=900&q=80"
+  },
+  {
+    "id": "d3",
+    "name": "Tusker Lager 500ml",
+    "cat": "Drinks",
+    "price": 350,
+    "desc": "Kenya favourite cold beer.",
+    "img": "https://images.unsplash.com/photo-1618183479302-1e0aa382c36b?w=900&q=80"
+  },
+  {
+    "id": "d4",
+    "name": "Soda 300ml",
+    "cat": "Drinks",
+    "price": 120,
+    "desc": "Coke, Fanta, Sprite or Krest.",
+    "img": "https://images.unsplash.com/photo-1581006852262-e4307cf6283a?w=900&q=80"
+  },
+  {
+    "id": "d5",
+    "name": "Bottled Water",
+    "cat": "Drinks",
+    "price": 80,
+    "desc": "Chilled still water.",
+    "img": "https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=900&q=80"
+  }
+]

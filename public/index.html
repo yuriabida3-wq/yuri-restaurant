@@ -1,0 +1,67 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Yuri Restaurant</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,sans-serif;background:#0a0a0c;color:#f5f3ee;padding-bottom:80px}
+header{background:linear-gradient(180deg,#0a0a0c,rgba(10,10,12,.9));padding:20px;position:sticky;top:0;z-index:10;border-bottom:1px solid rgba(201,162,74,.2);display:flex;justify-content:space-between;align-items:center}
+.brand{font-family:Georgia,serif;font-size:1.4rem;color:#e3c477}
+.brand small{display:block;font-size:.6rem;letter-spacing:.3em;color:#c9a24a;font-family:sans-serif}
+.cartbtn{background:linear-gradient(135deg,#e3c477,#c9a24a);border:none;color:#0a0a0c;padding:10px 18px;border-radius:99px;font-weight:600;cursor:pointer}
+.hero{text-align:center;padding:60px 20px 40px}
+.hero h1{font-family:Georgia,serif;font-size:2.4rem;color:#e3c477;margin-bottom:10px}
+.hero p{color:#8d8a82;max-width:500px;margin:0 auto}
+.filters{display:flex;gap:8px;overflow-x:auto;padding:0 20px 20px;scrollbar-width:none}
+.filters::-webkit-scrollbar{display:none}
+.chip{background:#17171b;border:1px solid rgba(201,162,74,.25);color:#b8b5ad;padding:10px 20px;border-radius:99px;font-size:.85rem;cursor:pointer;white-space:nowrap}
+.chip.active{background:linear-gradient(135deg,#e3c477,#c9a24a);color:#0a0a0c;font-weight:600;border-color:transparent}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;padding:0 20px;max-width:1200px;margin:0 auto}
+.dish{background:linear-gradient(170deg,#1a1a1f,#111114);border:1px solid rgba(201,162,74,.15);border-radius:20px;overflow:hidden;transition:transform .3s,box-shadow .3s}
+.dish:hover{transform:translateY(-6px);box-shadow:0 20px 40px rgba(0,0,0,.5),0 0 30px rgba(201,162,74,.15);border-color:rgba(201,162,74,.5)}
+.dm{position:relative;aspect-ratio:4/3;overflow:hidden;background:#0a0a0c}
+.dm img{width:100%;height:100%;object-fit:cover;transition:transform .6s}
+.dish:hover .dm img{transform:scale(1.08)}
+.dm::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 50%,rgba(10,10,12,.9))}
+.badge{position:absolute;top:12px;left:12px;background:rgba(10,10,12,.8);backdrop-filter:blur(10px);border:1px solid rgba(201,162,74,.4);color:#e3c477;padding:4px 12px;border-radius:99px;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;font-weight:600;z-index:2}
+.price{position:absolute;bottom:12px;right:12px;background:linear-gradient(135deg,#e3c477,#c9a24a);color:#0a0a0c;padding:7px 14px;border-radius:99px;font-family:Georgia,serif;font-weight:700;font-size:1rem;z-index:2;box-shadow:0 6px 20px rgba(201,162,74,.4)}
+.db{padding:20px}
+.db h3{font-family:Georgia,serif;font-size:1.3rem;margin-bottom:6px}
+.db p{color:#8d8a82;font-size:.88rem;line-height:1.5;margin-bottom:14px}
+.add{width:100%;background:rgba(201,162,74,.08);border:1px solid rgba(201,162,74,.3);color:#e3c477;padding:12px;border-radius:99px;font-weight:500;cursor:pointer;transition:all .3s}
+.add:hover{background:linear-gradient(135deg,#e3c477,#c9a24a);color:#0a0a0c}
+.add.added{background:linear-gradient(135deg,#4fb37a,#3a8a5e);border-color:#4fb37a;color:#fff}
+footer{text-align:center;padding:40px 20px;color:#7d7a73;font-size:.85rem}
+</style></head><body>
+<header><div class="brand">Yuri<small>RESTAURANT</small></div><button class="cartbtn" onclick="openCart()">Cart <span id="cc">0</span></button></header>
+<div class="hero"><h1>Elegance served on a plate</h1><p>Signature Kenyan grills, mains and desserts — delivered fresh.</p></div>
+<div class="filters" id="filters"></div>
+<div class="grid" id="grid"></div>
+<footer><p>Yuri Restaurant - Nairobi, Kenya</p><p style="margin-top:6px"><a href="/admin.html" style="color:#c9a24a;text-decoration:none">Owner Login</a></p></footer>
+<div id="cartModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:50;overflow-y:auto">
+<div style="max-width:500px;margin:40px auto;background:#111114;border:1px solid rgba(201,162,74,.3);border-radius:20px;padding:24px">
+<h2 style="font-family:Georgia,serif;color:#e3c477;margin-bottom:20px">Your Order</h2>
+<div id="cartItems" style="margin-bottom:20px"></div>
+<input id="cn" placeholder="Your name" style="width:100%;padding:12px;margin-bottom:10px;background:#17171b;border:1px solid rgba(255,255,255,.14);border-radius:10px;color:#fff;font-size:1rem">
+<input id="cp" placeholder="Phone (0712345678)" style="width:100%;padding:12px;margin-bottom:10px;background:#17171b;border:1px solid rgba(255,255,255,.14);border-radius:10px;color:#fff;font-size:1rem">
+<select id="cf" style="width:100%;padding:12px;margin-bottom:10px;background:#17171b;border:1px solid rgba(255,255,255,.14);border-radius:10px;color:#fff;font-size:1rem"><option value="delivery">Delivery (+KES 200)</option><option value="pickup">Pickup</option></select>
+<input id="ca" placeholder="Delivery address" style="width:100%;padding:12px;margin-bottom:16px;background:#17171b;border:1px solid rgba(255,255,255,.14);border-radius:10px;color:#fff;font-size:1rem">
+<button onclick="placeOrder()" style="width:100%;background:linear-gradient(135deg,#e3c477,#c9a24a);border:none;color:#0a0a0c;padding:14px;border-radius:99px;font-weight:600;font-size:1rem;cursor:pointer;margin-bottom:10px">Place order via WhatsApp</button>
+<button onclick="document.getElementById('cartModal').style.display='none'" style="width:100%;background:none;border:1px solid rgba(255,255,255,.14);color:#b8b5ad;padding:12px;border-radius:99px;cursor:pointer">Cancel</button>
+</div></div>
+<script>
+var MENU=[],CART={},FILTER='All';
+function money(n){return 'KES '+Number(n).toLocaleString()}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function loadCart(){try{CART=JSON.parse(localStorage.getItem('yc')||'{}')}catch(e){CART={}}}
+function saveCart(){localStorage.setItem('yc',JSON.stringify(CART))}
+function badge(){var n=Object.values(CART).reduce(function(a,b){return a+b},0);document.getElementById('cc').textContent=n}
+function renderFilters(){var cats=['All'];MENU.forEach(function(m){if(cats.indexOf(m.cat)<0)cats.push(m.cat)});document.getElementById('filters').innerHTML=cats.map(function(c){return '<button class="chip'+(c===FILTER?' active':'')+'" onclick="setFilter(\''+c+'\')">'+c+'</button>'}).join('')}
+function setFilter(c){FILTER=c;renderFilters();renderMenu()}
+function renderMenu(){var items=FILTER==='All'?MENU:MENU.filter(function(m){return m.cat===FILTER});var fb='data:image/svg+xml;utf8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"><rect fill="#141418" width="400" height="300"/><text x="200" y="170" fill="#c9a24a" font-size="70" text-anchor="middle">&#127869;</text></svg>');document.getElementById('grid').innerHTML=items.map(function(d){var n=CART[d.id]||0;var lbl=n>0?'+ In order ('+n+')':'+ Add to order';var cls=n>0?' added':'';return '<div class="dish"><div class="dm"><span class="badge">'+esc(d.cat)+'</span><img src="'+esc(d.img)+'" loading="lazy" onerror="this.onerror=null;this.src=\''+fb+'\'"><span class="price">'+money(d.price)+'</span></div><div class="db"><h3>'+esc(d.name)+'</h3><p>'+esc(d.desc)+'</p><button class="add'+cls+'" onclick="addToCart(\''+d.id+'\')">'+lbl+'</button></div></div>'}).join('')}
+function addToCart(id){CART[id]=(CART[id]||0)+1;saveCart();badge();renderMenu()}
+function renderCart(){var keys=Object.keys(CART).filter(function(k){return CART[k]>0});if(!keys.length){document.getElementById('cartItems').innerHTML='<p style="color:#7d7a73;text-align:center;padding:20px">Cart is empty</p>';return}var total=0;document.getElementById('cartItems').innerHTML=keys.map(function(k){var d=MENU.find(function(m){return m.id===k});if(!d)return '';total+=d.price*CART[k];return '<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.1)"><div><div style="font-family:Georgia,serif">'+esc(d.name)+'</div><div style="color:#c9a24a;font-size:.85rem">'+money(d.price)+'</div></div><div><button onclick="chg(\''+k+'\',-1)" style="background:#17171b;border:1px solid rgba(255,255,255,.14);color:#fff;width:30px;height:30px;border-radius:50%;cursor:pointer">-</button><span style="padding:0 10px">'+CART[k]+'</span><button onclick="chg(\''+k+'\',1)" style="background:#17171b;border:1px solid rgba(255,255,255,.14);color:#fff;width:30px;height:30px;border-radius:50%;cursor:pointer">+</button></div></div>'}).join('')+'<div style="text-align:right;padding-top:14px;font-family:Georgia,serif;font-size:1.2rem;color:#e3c477">Subtotal: '+money(total)+'</div>'}
+function chg(id,d){CART[id]=(CART[id]||0)+d;if(CART[id]<=0)delete CART[id];saveCart();badge();renderMenu();renderCart()}
+function openCart(){renderCart();document.getElementById('cartModal').style.display='block'}
+function placeOrder(){var name=document.getElementById('cn').value.trim();var phone=document.getElementById('cp').value.trim();var ful=document.getElementById('cf').value;var addr=document.getElementById('ca').value.trim();if(name.length<2){alert('Enter your name');return}if(phone.replace(/\D/g,'').length<9){alert('Enter a valid phone');return}if(ful==='delivery'&&addr.length<5){alert('Enter delivery address');return}var items=Object.keys(CART).filter(function(k){return CART[k]>0}).map(function(k){return {id:k,qty:CART[k]}});if(!items.length){alert('Cart is empty');return}fetch('/api/order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:name,phone:phone,fulfillment:ful,address:addr,items:items})}).then(function(r){return r.json()}).then(function(d){if(!d.ok){alert(d.error||'Failed');return}alert('Order placed! Receipt: '+d.id+'\nTotal: KES '+d.total+'\n\nOpening WhatsApp...');CART={};saveCart();badge();renderMenu();document.getElementById('cartModal').style.display='none';if(d.whatsapp)window.open(d.whatsapp,'_blank')}).catch(function(e){alert('Error: '+e.message)})}
+fetch('/api/menu').then(function(r){return r.json()}).then(function(d){MENU=d.menu||[];renderFilters();renderMenu();badge()}).catch(function(){document.getElementById('grid').innerHTML='<p style="padding:40px;text-align:center;color:#7d7a73;grid-column:1/-1">Could not load menu. Is the server running?</p>'});
+</script></body></html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Yuri Restaurant — Owner</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,sans-serif;background:#0a0a0c;color:#f5f3ee;min-height:100vh;padding:20px}
+.login{max-width:400px;margin:60px auto;background:#111114;border:1px solid rgba(201,162,74,.3);border-radius:20px;padding:36px 28px}
+.brand{text-align:center;margin-bottom:28px}
+.brand h1{font-family:Georgia,serif;font-size:1.8rem;color:#e3c477}
+.brand small{display:block;font-size:.7rem;letter-spacing:.3em;color:#c9a24a;text-transform:uppercase;margin-top:6px}
+input{width:100%;padding:13px;background:#17171b;border:1px solid rgba(255,255,255,.14);border-radius:10px;color:#fff;font-size:1rem;margin-bottom:14px}
+input:focus{outline:none;border-color:#c9a24a}
+button{width:100%;padding:13px;border:none;border-radius:99px;font-size:.95rem;font-weight:600;cursor:pointer;margin-bottom:10px}
+.btn-gold{background:linear-gradient(135deg,#e3c477,#c9a24a);color:#0a0a0c}
+.btn-ghost{background:none;border:1px solid rgba(255,255,255,.2);color:#b8b5ad}
+.err{color:#e05252;font-size:.85rem;text-align:center;margin-bottom:10px;display:none}
+.dash{display:none;max-width:1100px;margin:0 auto}
+.head{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px;padding-bottom:16px;border-bottom:1px solid rgba(255,255,255,.1)}
+.head h1{font-family:Georgia,serif;color:#e3c477;font-size:1.4rem}
+.head-actions{display:flex;gap:8px}
+.head-actions button{width:auto;padding:9px 18px;font-size:.85rem;margin:0}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:24px}
+.stat{background:#141418;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:16px}
+.stat-label{font-size:.68rem;text-transform:uppercase;letter-spacing:.15em;color:#7d7a73;margin-bottom:4px}
+.stat-num{font-family:Georgia,serif;font-size:1.6rem;color:#e3c477;font-weight:600}
+.tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.tab{padding:9px 18px;border-radius:99px;border:1px solid rgba(255,255,255,.14);color:#b8b5ad;background:none;width:auto;font-size:.85rem;cursor:pointer;margin:0}
+.tab.active{background:#c9a24a;color:#0a0a0c;border-color:#c9a24a;font-weight:600}
+.panel{display:none}
+.panel.active{display:block}
+.order{background:#141418;border:1px solid rgba(255,255,255,.08);border-left:3px solid #c9a24a;border-radius:14px;padding:18px;margin-bottom:14px}
+.order.preparing{border-left-color:#5b8def}
+.order.delivered{border-left-color:#4fb37a}
+.order.cancelled{border-left-color:#e05252;opacity:.6}
+.order-top{display:flex;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px}
+.order-id{font-family:monospace;color:#c9a24a;font-size:.8rem}
+.order-name{font-family:Georgia,serif;font-size:1.1rem;margin-top:2px}
+.order-meta{font-size:.8rem;color:#7d7a73;margin-top:4px;line-height:1.5}
+.order-total{font-family:Georgia,serif;font-size:1.3rem;color:#e3c477;text-align:right}
+.order-items{background:#17171b;border-radius:10px;padding:12px;margin:10px 0;font-size:.85rem;color:#b8b5ad}
+.order-items div{display:flex;justify-content:space-between;padding:3px 0}
+.order-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.order-actions button{width:auto;padding:7px 14px;font-size:.78rem;margin:0;border-radius:99px;border:1px solid rgba(255,255,255,.14);background:none;color:#b8b5ad}
+.order-actions button.blue{border-color:#5b8def;color:#5b8def}
+.order-actions button.green{border-color:#4fb37a;color:#4fb37a}
+.order-actions button.red{border-color:#e05252;color:#e05252}
+.order-actions a.wa{border:1px solid #25d366;color:#25d366;padding:7px 14px;border-radius:99px;font-size:.78rem;text-decoration:none}
+.review{background:#141418;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:16px;margin-bottom:12px}
+.review-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.review-stars{color:#c9a24a;letter-spacing:2px}
+.review-text{color:#b8b5ad;font-size:.9rem;line-height:1.5}
+.review-date{font-size:.72rem;color:#7d7a73;margin-top:6px}
+.review-del{background:none;border:1px solid #e05252;color:#e05252;padding:6px 12px;border-radius:99px;font-size:.75rem;width:auto;margin-top:10px}
+.empty{text-align:center;padding:40px;color:#7d7a73}
+@media(max-width:600px){.head h1{font-size:1.1rem}.stat-num{font-size:1.3rem}}
+</style></head><body>
+<div class="login" id="loginBox">
+<div class="brand"><h1>Yuri Restaurant</h1><small>Owner Dashboard</small></div>
+<div class="err" id="loginErr"></div>
+<input id="u" placeholder="Username" autocomplete="username">
+<input id="p" type="password" placeholder="Password" autocomplete="current-password">
+<button class="btn-gold" onclick="doLogin()">Sign in</button>
+<button class="btn-ghost" onclick="location.href='/'">Back to site</button>
+</div>
+<div class="dash" id="dashBox">
+<div class="head"><h1>Owner Dashboard</h1>
+<div class="head-actions">
+<button class="btn-ghost" onclick="loadData()">Refresh</button>
+<button class="btn-ghost" onclick="logout()">Sign out</button>
+</div></div>
+<div class="stats" id="stats"></div>
+<div class="tabs">
+<button class="tab active" data-t="orders" onclick="showTab('orders',this)">Orders</button>
+<button class="tab" data-t="reviews" onclick="showTab('reviews',this)">Reviews</button>
+</div>
+<div class="panel active" id="pOrders"></div>
+<div class="panel" id="pReviews"></div>
+</div>
+<script>
+var TOKEN=localStorage.getItem('yuri_token')||'';
+var CURRENCY='KES';
+var ALL_ORDERS=[];
+var FILTER='all';
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function money(n){return CURRENCY+' '+Number(n||0).toLocaleString()}
+function fd(iso){var d=new Date(iso);if(isNaN(d))return '';return d.toLocaleString('en-KE',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})}
+function api(path,opts){opts=opts||{};opts.headers=Object.assign({'Content-Type':'application/json'},opts.headers||{});if(TOKEN)opts.headers['Authorization']='Bearer '+TOKEN;return fetch(path,opts).then(function(r){return r.json().then(function(d){if(r.status===401){logout();throw new Error('Session expired')}if(!r.ok||d.ok===false)throw new Error(d.error||'Failed');return d})})}
+function doLogin(){var u=document.getElementById('u').value.trim();var p=document.getElementById('p').value;var err=document.getElementById('loginErr');err.style.display='none';api('/api/admin/login',{method:'POST',body:JSON.stringify({user:u,pass:p})}).then(function(d){TOKEN=d.token;localStorage.setItem('yuri_token',TOKEN);showDash();loadData()}).catch(function(e){err.textContent=e.message;err.style.display='block'})}
+function showLogin(){document.getElementById('loginBox').style.display='block';document.getElementById('dashBox').style.display='none'}
+function showDash(){document.getElementById('loginBox').style.display='none';document.getElementById('dashBox').style.display='block'}
+function logout(){TOKEN='';localStorage.removeItem('yuri_token');showLogin();document.getElementById('u').value='';document.getElementById('p').value=''}
+function showTab(name,el){document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active')});el.classList.add('active');document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active')});document.getElementById('p'+name.charAt(0).toUpperCase()+name.slice(1)).classList.add('active')}
+function loadData(){api('/api/admin/data').then(function(d){CURRENCY=d.currency||'KES';renderStats(d.stats);ALL_ORDERS=d.orders||[];renderOrders();renderReviews(d.reviews||[])}).catch(function(e){if(e.message!=='Session expired')alert(e.message)})}
+function renderStats(s){s=s||{};document.getElementById('stats').innerHTML='<div class="stat"><div class="stat-label">Revenue</div><div class="stat-num">'+money(s.revenue)+'</div></div><div class="stat"><div class="stat-label">Total orders</div><div class="stat-num">'+(s.totalOrders||0)+'</div></div><div class="stat"><div class="stat-label">Pending</div><div class="stat-num">'+(s.pending||0)+'</div></div><div class="stat"><div class="stat-label">Preparing</div><div class="stat-num">'+(s.preparing||0)+'</div></div><div class="stat"><div class="stat-label">Delivered</div><div class="stat-num">'+(s.delivered||0)+'</div></div><div class="stat"><div class="stat-label">Rating</div><div class="stat-num">'+(s.avgRating||0)+'</div></div>'}
+function renderOrders(){var list=FILTER==='all'?ALL_ORDERS:ALL_ORDERS.filter(function(o){return o.status===FILTER});var wrap=document.getElementById('pOrders');var tabs='<div class="tabs">';['all','new','preparing','delivered','cancelled'].forEach(function(f){tabs+='<button class="tab'+(FILTER===f?' active':'')+'" onclick="FILTER=\''+f+'\';renderOrders()">'+f.charAt(0).toUpperCase()+f.slice(1)+'</button>'});tabs+='</div>';if(!list.length){wrap.innerHTML=tabs+'<div class="empty">No orders in this view</div>';return}wrap.innerHTML=tabs+list.map(function(o){var items=(o.items||[]).map(function(i){return '<div><span>'+i.qty+' x '+esc(i.name)+'</span><span>'+money(i.price*i.qty)+'</span></div>'}).join('');var wa=o.phone?'https://wa.me/'+o.phone.replace(/\D/g,'')+'?text='+encodeURIComponent('Hello '+o.name+', about your order '+o.id):'';var acts='';if(o.status!=='preparing'&&o.status!=='delivered'&&o.status!=='cancelled')acts+='<button class="blue" onclick="setStatus(\''+o.id+'\',\'preparing\')">Preparing</button>';if(o.status!=='delivered'&&o.status!=='cancelled')acts+='<button class="green" onclick="setStatus(\''+o.id+'\',\'delivered\')">Delivered</button>';if(o.status!=='cancelled')acts+='<button class="red" onclick="setStatus(\''+o.id+'\',\'cancelled\')">Cancel</button>';if(wa)acts+='<a class="wa" href="'+wa+'" target="_blank">WhatsApp</a>';return '<div class="order '+esc(o.status)+'"><div class="order-top"><div><div class="order-id">'+esc(o.id)+'</div><div class="order-name">'+esc(o.name)+'</div><div class="order-meta">'+esc(o.phone)+' &middot; '+o.fulfillment+'<br>'+fd(o.date)+(o.address?'<br>'+esc(o.address):'')+(o.note?'<br><em>'+esc(o.note)+'</em>':'')+'</div></div><div class="order-total">'+money(o.total)+'<br><small style="font-size:.7rem;color:#7d7a73">'+esc(o.status)+'</small></div></div><div class="order-items">'+items+'</div><div class="order-actions">'+acts+'</div></div>'}).join('')}
+function setStatus(id,status){api('/api/admin/order-status',{method:'POST',body:JSON.stringify({id:id,status:status})}).then(function(){loadData()}).catch(function(e){alert(e.message)})}
+function renderReviews(revs){var wrap=document.getElementById('pReviews');if(!revs.length){wrap.innerHTML='<div class="empty">No reviews yet</div>';return}wrap.innerHTML=revs.map(function(r){var stars='★'.repeat(r.rating)+'☆'.repeat(5-r.rating);return '<div class="review"><div class="review-head"><strong>'+esc(r.name)+'</strong><span class="review-stars">'+stars+'</span></div><div class="review-text">'+esc(r.text)+'</div><div class="review-date">'+fd(r.date)+'</div><button class="review-del" onclick="delReview(\''+r.id+'\')">Delete</button></div>'}).join('')}
+function delReview(id){if(!confirm('Delete this review?'))return;api('/api/admin/review',{method:'DELETE',body:JSON.stringify({id:id})}).then(function(){loadData()}).catch(function(e){alert(e.message)})}
+document.getElementById('p').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin()});
+if(TOKEN){api('/api/admin/data').then(function(d){CURRENCY=d.currency||'KES';renderStats(d.stats);ALL_ORDERS=d.orders||[];renderOrders();renderReviews(d.reviews||[]);showDash()}).catch(function(){logout()})}else{showLogin()}
+</script></body></html>
