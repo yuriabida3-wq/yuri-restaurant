@@ -28,9 +28,10 @@ const MENU=[
 ];
 function rd(f,d){try{return JSON.parse(fs.readFileSync(path.join(DATA,f),'utf8'))}catch(e){return d}}
 function wr(f,d){fs.writeFileSync(path.join(DATA,f),JSON.stringify(d,null,2))}
-function jn(res,c,o){const b=JSON.stringify(o);res.writeHead(c,{'Content-Type':'application/json','Content-Length':Buffer.byteLength(b)});res.end(b)}
+function jn(res,c,o){const b=JSON.stringify(o);res.writeHead(c,{'Content-Type':'application/json','Content-Length':Buffer.byteLength(b),'X-Content-Type-Options':'nosniff','Cache-Control':'no-store'});res.end(b)}
 function bd(req){return new Promise(r=>{let s='';req.on('data',c=>s+=c);req.on('end',()=>{try{r(JSON.parse(s||'{}'))}catch(e){r({})}})})}
 function sg(o){const b=Buffer.from(JSON.stringify(o)).toString('base64url');const s=crypto.createHmac('sha256',SEC).update(b).digest('base64url');return b+'.'+s}
+function mktok(){return sg({role:'owner',exp:Date.now()+8*3600*1000,nonce:crypto.randomBytes(16).toString('hex')})}
 function vf(t){if(!t||t.indexOf('.')===-1)return null;const i=t.indexOf('.');const b=t.slice(0,i);const s=t.slice(i+1);const e=crypto.createHmac('sha256',SEC).update(b).digest('base64url');if(s!==e)return null;try{const p=JSON.parse(Buffer.from(b,'base64url').toString());return p.exp>Date.now()?p:null}catch(e){return null}}
 function au(req){const h=req.headers.authorization||'';return vf(h.startsWith('Bearer ')?h.slice(7):'')}
 if(!fs.existsSync(path.join(DATA,'menu.json')))wr('menu.json',MENU);
@@ -45,7 +46,7 @@ const u=new URL(req.url,'http://x'),p=u.pathname,m=req.method;
 if(p==='/api/config')return jn(res,200,{ok:true,currency:CUR,deliveryFee:200});
 if(p==='/api/menu')return jn(res,200,{ok:true,menu:rd('menu.json',MENU)});
 if(p==='/api/reviews'&&m==='GET')return jn(res,200,{ok:true,reviews:rd('reviews.json',[])});
-if(p==='/api/reviews'&&m==='POST'){const b=await bd(req);if(!b.name||b.name.length<2)return jn(res,400,{ok:false,error:'Name required'});if(!b.text||b.text.length<5)return jn(res,400,{ok:false,error:'Review too short'});const r={id:'r'+Date.now(),name:String(b.name).slice(0,40),rating:Math.max(1,Math.min(5,+b.rating||5)),text:String(b.text).slice(0,500),date:new Date().toISOString()};const l=rd('reviews.json',[]);l.unshift(r);wr('reviews.json',l);return jn(res,201,{ok:true,review:r})}
+if(p==='/api/reviews'&&m==='POST'){const b=await bd(req);if(!b.name||b.name.length<2)return jn(res,400,{ok:false,error:'Name required'});if(!b.text||b.text.length<5)return jn(res,400,{ok:false,error:'Review too short'});const r={id:'r'+Date.now(),name:String(b.name).slice(0,40),rating:Math.max(1,Math.min(5,+b.rating||5)),text:String(b.text).slice(0,500),date:new Date().toISOString()};const l=rd('reviews.json',[]);l.unshift(r);const t=path.join(DATA,'reviews.json');const lk=fs.openSync(t,'r+');const bb=Buffer.from(JSON.stringify(l,null,2));fs.ftruncateSync(lk,0);fs.writeSync(lk,bb,0,bb.length,0);fs.closeSync(lk);return jn(res,201,{ok:true,review:r})}
 if(p==='/api/order'&&m==='POST'){const b=await bd(req);if(!b.name||!b.phone||!b.items||!b.items.length)return jn(res,400,{ok:false,error:'Missing fields'});
 const menu=rd('menu.json',MENU);
 const items=b.items.map(i=>{const f=menu.find(x=>x.id===i.id);return f?{id:f.id,name:f.name,price:f.price,qty:Math.max(1,Math.min(20,+i.qty||1))}:null}).filter(Boolean);
@@ -53,7 +54,7 @@ if(!items.length)return jn(res,400,{ok:false,error:'No valid items'});
 const sub=items.reduce((s,i)=>s+i.price*i.qty,0);
 const fee=b.fulfillment==='delivery'?200:0;
 const o={id:'YR-'+Date.now().toString(36).toUpperCase(),name:b.name,phone:b.phone,fulfillment:b.fulfillment||'delivery',address:b.address||'',note:b.note||'',items,subtotal:sub,deliveryFee:fee,total:sub+fee,status:'new',date:new Date().toISOString()};
-const l=rd('orders.json',[]);l.unshift(o);wr('orders.json',l);
+const l=rd('orders.json',[]);l.unshift(o);const t=path.join(DATA,'orders.json');const lk=fs.openSync(t,'r+');const bb=Buffer.from(JSON.stringify(l,null,2));fs.ftruncateSync(lk,0);fs.writeSync(lk,bb,0,bb.length,0);fs.closeSync(lk);
 const L=['*NEW ORDER - YURI RESTAURANT*','','Receipt: '+o.id,'Name: '+o.name,'Phone: '+o.phone,'Type: '+(o.fulfillment==='delivery'?'DELIVERY':'PICKUP')];
 if(o.address)L.push('Address: '+o.address);
 L.push('','*ITEMS*');items.forEach(i=>L.push('- '+i.qty+' x '+i.name+' = '+CUR+' '+(i.price*i.qty)));
@@ -62,12 +63,18 @@ L.push('*TOTAL: '+CUR+' '+(sub+fee)+'*');if(o.note)L.push('','Note: '+o.note);
 const wa='https://wa.me/'+WA+'?text='+encodeURIComponent(L.join('\n'));
 console.log('[ORDER] '+o.id+' - '+CUR+' '+o.total);
 return jn(res,201,{ok:true,id:o.id,total:o.total,subtotal:sub,deliveryFee:fee,currency:CUR,whatsapp:wa})}
-if(p==='/api/admin/login'&&m==='POST'){const b=await bd(req);if(b.user!==USER||b.pass!==PASS)return jn(res,401,{ok:false,error:'Wrong credentials'});return jn(res,200,{ok:true,token:sg({role:'owner',exp:Date.now()+8*3600*1000})})}
+const loginFail={};
+if(p==='/api/admin/login'&&m==='POST'){const ip=req.socket.remoteAddress||'';
+  if(loginFail[ip]&&loginFail[ip].n>=5&&Date.now()-loginFail[ip].t<900000)return jn(res,429,{ok:false,error:'Too many attempts'});
+  const b=await bd(req);if(b.user!==USER||b.pass!==PASS){loginFail[ip]={n:(loginFail[ip]&&loginFail[ip].n||0)+1,t:Date.now()};return jn(res,401,{ok:false,error:'Wrong credentials'})}
+  loginFail[ip]={n:0,t:0};return jn(res,200,{ok:true,token:mktok()})}
 if(p==='/api/admin/data'){if(!au(req))return jn(res,401,{ok:false,error:'Not signed in'});const o=rd('orders.json',[]),r=rd('reviews.json',[]);const a=o.filter(x=>x.status!=='cancelled');const rev=a.reduce((s,x)=>s+x.total,0);return jn(res,200,{ok:true,currency:CUR,orders:o,reviews:r,menu:rd('menu.json',MENU),stats:{revenue:rev,totalOrders:o.length,pending:o.filter(x=>x.status==='new').length,preparing:o.filter(x=>x.status==='preparing').length,delivered:o.filter(x=>x.status==='delivered').length,reviewCount:r.length,avgRating:r.length?r.reduce((s,x)=>s+x.rating,0)/r.length:0}})}
-if(p==='/api/admin/order-status'&&m==='POST'){if(!au(req))return jn(res,401,{ok:false,error:'Not signed in'});const b=await bd(req);const o=rd('orders.json',[]);const x=o.find(y=>y.id===b.id);if(!x)return jn(res,404,{ok:false,error:'Not found'});x.status=b.status;wr('orders.json',o);return jn(res,200,{ok:true,order:x})}
-if(p==='/api/admin/review'&&m==='DELETE'){if(!au(req))return jn(res,401,{ok:false,error:'Not signed in'});const b=await bd(req);wr('reviews.json',rd('reviews.json',[]).filter(r=>r.id!==b.id));return jn(res,200,{ok:true})}
+if(p==='/api/admin/order-status'&&m==='POST'){if(!au(req))return jn(res,401,{ok:false,error:'Not signed in'});const b=await bd(req);const o=rd('orders.json',[]);const x=o.find(y=>y.id===b.id);if(!x)return jn(res,404,{ok:false,error:'Not found'});const VALID=['new','preparing','delivered','cancelled'];if(!VALID.includes(b.status))return jn(res,400,{ok:false,error:'Invalid status'});x.status=b.status;const t=path.join(DATA,'orders.json');const lk=fs.openSync(t,'r+');const b2=Buffer.from(JSON.stringify(o,null,2));fs.ftruncateSync(lk,0);fs.writeSync(lk,b2,0,b2.length,0);fs.closeSync(lk);return jn(res,200,{ok:true,order:x})}
+if(p==='/api/admin/review'&&m==='DELETE'){if(!au(req))return jn(res,401,{ok:false,error:'Not signed in'});const b=await bd(req);const l=rd('reviews.json',[]).filter(r=>r.id!==b.id);const t=path.join(DATA,'reviews.json');const lk=fs.openSync(t,'r+');const bb=Buffer.from(JSON.stringify(l,null,2));fs.ftruncateSync(lk,0);fs.writeSync(lk,bb,0,bb.length,0);fs.closeSync(lk);return jn(res,200,{ok:true})}
 let f=p==='/'?'/index.html':p;
-f=path.join(PUB,f.replace(/\.\./g,''));
+if(p.includes('..'))return jn(res,400,{ok:false,error:'Invalid path'});
+  f=path.resolve(PUB,f);
+  if(f!==PUB&&!f.startsWith(PUB+path.sep))return jn(res,403,{ok:false,error:'Forbidden'});
 fs.readFile(f,(e,d)=>{if(e){res.writeHead(404);return res.end('404')}res.writeHead(200,{'Content-Type':MIME[path.extname(f)]||'application/octet-stream'});res.end(d)});
 });
 server.listen(PORT,'0.0.0.0',()=>console.log('Yuri Restaurant on http://localhost:'+PORT));
