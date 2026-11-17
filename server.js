@@ -32,7 +32,7 @@ function jn(res,c,o){const b=JSON.stringify(o);res.writeHead(c,{'Content-Type':'
 function bd(req){return new Promise(r=>{let s='';req.on('data',c=>s+=c);req.on('end',()=>{try{r(JSON.parse(s||'{}'))}catch(e){r({})}})})}
 function sg(o){const b=Buffer.from(JSON.stringify(o)).toString('base64url');const s=crypto.createHmac('sha256',SEC).update(b).digest('base64url');return b+'.'+s}
 function mktok(){return sg({role:'owner',exp:Date.now()+8*3600*1000,nonce:crypto.randomBytes(16).toString('hex')})}
-function vf(t){if(!t||t.indexOf('.')===-1)return null;const i=t.indexOf('.');const b=t.slice(0,i);const s=t.slice(i+1);const e=crypto.createHmac('sha256',SEC).update(b).digest('base64url');if(s!==e)return null;try{const p=JSON.parse(Buffer.from(b,'base64url').toString());return p.exp>Date.now()?p:null}catch(e){return null}}
+function vf(t){if(!t||t.indexOf('.')===-1)return null;const i=t.indexOf('.');const b=t.slice(0,i);const s=t.slice(i+1);const e=crypto.createHmac('sha256',SEC).update(b).digest('base64url');if(s!==e)return null;try{const p=JSON.parse(Buffer.from(b,'base64url').toString());if(!p.nonce||p.exp<=Date.now())return null;return p}catch(e){return null}}
 function au(req){const h=req.headers.authorization||'';return vf(h.startsWith('Bearer ')?h.slice(7):'')}
 if(!fs.existsSync(path.join(DATA,'menu.json')))wr('menu.json',MENU);
 if(!fs.existsSync(path.join(DATA,'orders.json')))wr('orders.json',[]);
@@ -73,7 +73,7 @@ if(p==='/api/admin/order-status'&&m==='POST'){if(!au(req))return jn(res,401,{ok:
 if(p==='/api/admin/review'&&m==='DELETE'){if(!au(req))return jn(res,401,{ok:false,error:'Not signed in'});const b=await bd(req);const l=rd('reviews.json',[]).filter(r=>r.id!==b.id);const t=path.join(DATA,'reviews.json');const lk=fs.openSync(t,'r+');const bb=Buffer.from(JSON.stringify(l,null,2));fs.ftruncateSync(lk,0);fs.writeSync(lk,bb,0,bb.length,0);fs.closeSync(lk);return jn(res,200,{ok:true})}
 let f=p==='/'?'/index.html':p;
 if(p.includes('..'))return jn(res,400,{ok:false,error:'Invalid path'});
-  f=path.resolve(PUB,f);
+  f=path.normalize(path.join(PUB,f));
   if(f!==PUB&&!f.startsWith(PUB+path.sep))return jn(res,403,{ok:false,error:'Forbidden'});
 fs.readFile(f,(e,d)=>{if(e){res.writeHead(404);return res.end('404')}res.writeHead(200,{'Content-Type':MIME[path.extname(f)]||'application/octet-stream'});res.end(d)});
 });
